@@ -17,7 +17,6 @@ venv/bin/pip3 install jupyterlab
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
 
 venv/bin/pip3 install numpy
-venv/bin/pip3 install scipy
 venv/bin/pip3 install matplotlib
 
 # 运行Jupyter
