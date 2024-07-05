@@ -23,4 +23,10 @@ venv/bin/pip3 install matplotlib
 # 运行Jupyter
 cd /root/GithubProjects/HelloAI/Book/Python神经网络编程/
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
+
+# 使用包
+import numpy as np
+import scipy.special
+import matplotlib.pyplot as plt
+%matplotlib inline
 ```
