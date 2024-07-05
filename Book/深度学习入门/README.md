@@ -8,10 +8,10 @@ apt-get install -y python3-full python3-pip
 # 项目代码
 mkdir -p /root/GithubProjects && cd /root/GithubProjects/
 git clone git@github.com:michaelbrucelin/HelloAI.git
-cd HelloAI/Book/Python神经网络编程
+cd HelloAI/Book/深度学习入门
 
 # Python环境
-cd /root/GithubProjects/HelloAI/Book/Python神经网络编程/
+cd /root/GithubProjects/HelloAI/Book/深度学习入门/
 python3 -m venv venv
 venv/bin/pip3 install jupyterlab
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
@@ -21,6 +21,6 @@ venv/bin/pip3 install scipy
 venv/bin/pip3 install matplotlib
 
 # 运行Jupyter
-cd /root/GithubProjects/HelloAI/Book/Python神经网络编程/
+cd /root/GithubProjects/HelloAI/Book/深度学习入门/
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
 ```
