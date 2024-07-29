@@ -5,6 +5,9 @@
 alias mygitpush='git add --all && git commit -a -m $(TZ=UTC-8 date +"%Y%m%d-%H%M%S") && git push'
 apt-get install -y python3-full python3-pip
 
+# 图书
+[深度学习入门：基于Python的理论与实现.pdf](./assets/file/深度学习入门：基于Python的理论与实现.pdf)
+
 # 项目代码
 mkdir -p /root/GithubProjects && cd /root/GithubProjects/
 git clone git@github.com:michaelbrucelin/HelloAI.git

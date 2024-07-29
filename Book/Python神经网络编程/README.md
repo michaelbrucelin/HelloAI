@@ -5,6 +5,9 @@
 alias mygitpush='git add --all && git commit -a -m $(TZ=UTC-8 date +"%Y%m%d-%H%M%S") && git push'
 apt-get install -y python3-full python3-pip
 
+# 图书
+[Python神经网络编程.pdf](./assets/file/Python神经网络编程.pdf)
+
 # 项目代码
 mkdir -p /root/GithubProjects && cd /root/GithubProjects/
 git clone git@github.com:michaelbrucelin/HelloAI.git
