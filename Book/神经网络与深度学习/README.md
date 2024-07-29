@@ -7,6 +7,8 @@ apt-get install -y python3-full python3-pip
 
 # 图书
 <http://neuralnetworksanddeeplearning.com/>
+<https://github.com/mnielsen/neural-networks-and-deep-learning>
+<https://github.com/tigerneil/neural-networks-and-deep-learning-zh-cn>
 [Neural Network and Deep Learning.pdf](./assets/file/Neural%20Network%20and%20Deep%20Learning.pdf)
 
 # 项目代码
