@@ -22,12 +22,12 @@ python3 -m venv venv
 venv/bin/pip3 install jupyterlab
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
 
-# venv/bin/pip3 install numpy
+venv/bin/pip3 install numpy
 
 # 运行Jupyter
 cd /root/GithubProjects/HelloAI/Book/神经网络与深度学习/
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
 
 # 使用包
-# import numpy as np
+import numpy as np
 ```
