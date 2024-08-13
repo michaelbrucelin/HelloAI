@@ -16,6 +16,10 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
     tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+systemctl enable docker.service
+systemctl start docker.service
+systemctl status docker.service
+# docker run hello-world
 
 # 图书
 <http://neuralnetworksanddeeplearning.com/>
@@ -30,15 +34,13 @@ cd HelloAI/Book/神经网络与深度学习
 
 # Python环境
 cd /root/GithubProjects/HelloAI/Book/神经网络与深度学习/
-python3 -m venv venv
-venv/bin/pip3 install jupyterlab
-venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
+docker build -t python2.7-jupyterlab .
 
-venv/bin/pip3 install numpy
+# pip install numpy scipy matplotlib  # 需要更改Dockerfile并重新构建Docker镜像
 
 # 运行Jupyter
-cd /root/GithubProjects/HelloAI/Book/神经网络与深度学习/
-venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
+# cd /root/GithubProjects/HelloAI/Book/神经网络与深度学习/
+docker run -it --rm -p 8888:8888 -v /root/GithubProjects/HelloAI/Book/神经网络与深度学习:/workspace python2.7-jupyterlab
 
 # 使用包
 import numpy as np
