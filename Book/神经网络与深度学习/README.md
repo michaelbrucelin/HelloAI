@@ -6,7 +6,6 @@ alias mygitpush='git add --all && git commit -a -m $(TZ=UTC-8 date +"%Y%m%d-%H%M
 # apt-get install -y python3-full python3-pip  # 这本书使用的是Python2.7
 # 这里使用Docker提供的Python2.7
 # https://docs.docker.com/engine/install/debian/
-proxychains bash  # 如果网络环境无法连接Docker官网
 for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do apt-get remove $pkg; done
 apt-get update -y && apt-get install -y ca-certificates curl
 install -m 0755 -d /etc/apt/keyrings
@@ -20,6 +19,8 @@ systemctl enable docker.service
 systemctl start docker.service
 systemctl status docker.service
 # docker run hello-world
+# docker build --build-arg HTTP_PROXY="http://192.168.0.9:1991" .
+# docker run --env HTTP_PROXY="http://192.168.0.9:1991" hello-world
 
 # 图书
 <http://neuralnetworksanddeeplearning.com/>
