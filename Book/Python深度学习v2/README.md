@@ -19,9 +19,10 @@ python3 -m venv venv
 venv/bin/pip3 install jupyterlab
 venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.12
 
+venv/bin/pip3 install tensorflow  # 会自动安装keras, numpy等
 # venv/bin/pip3 install numpy
 # venv/bin/pip3 install scipy
-# venv/bin/pip3 install matplotlib
+venv/bin/pip3 install matplotlib
 
 # 运行Jupyter
 cd /root/GithubProjects/HelloAI/Book/Python深度学习v2/
