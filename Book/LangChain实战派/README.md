@@ -10,7 +10,8 @@ apt-get install -y python3-full python3-pip
 # 安装ollama
 curl -fsSL https://ollama.com/install.sh | sh
 ollama -v
-ollama run deepseek-r1:1.5b 
+ollama pull deepseek-r1:1.5b 
+ollama pull qwen:1.8b 
 
 # 图书
 # [LangChain实战派.pdf](./assets/file/LangChain实战派.pdf)
