@@ -10,8 +10,7 @@ apt-get install -y python3-full python3-pip
 # 安装ollama
 curl -fsSL https://ollama.com/install.sh | sh
 ollama -v
-ollama pull deepseek-r1:1.5b 
-ollama pull qwen:1.8b 
+ollama pull gpt-oss:20b
 
 # 图书
 # [LangChain实战派.pdf](./assets/file/LangChain实战派.pdf)
@@ -25,14 +24,15 @@ cd HelloAI/Book/LangChain实战派
 cd /root/GithubProjects/HelloAI/Book/LangChain实战派/
 python3 -m venv venv
 venv/bin/pip3 install jupyterlab
-venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.91
+venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.88.12
 
 venv/bin/pip3 install --upgrade langchain-core langchain-community langchain-openai
+venv/bin/pip3 install --upgrade ollama
 venv/bin/pip3 install --upgrade loguru numexpr
 
 # 运行Jupyter
 cd /root/GithubProjects/HelloAI/Book/LangChain实战派/
-venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.91.91
+venv/bin/jupyter lab --allow-root --no-browser --port 8888 --ip=192.168.88.12
 
 # 使用包
 import numpy as langchain
