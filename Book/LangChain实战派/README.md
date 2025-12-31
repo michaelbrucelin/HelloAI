@@ -10,6 +10,8 @@ apt-get install -y python3-full python3-pip
 # 安装ollama
 curl -fsSL https://ollama.com/install.sh | sh
 ollama -v
+ollama pull deepseek-r1:1.5b
+ollama pull deepseek-r1:8b
 ollama pull gpt-oss:20b
 
 # 图书
