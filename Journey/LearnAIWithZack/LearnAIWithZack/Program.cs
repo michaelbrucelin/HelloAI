@@ -1,4 +1,6 @@
-﻿namespace LearnAIWithZack
+﻿using LearnAIWithZack._01._调用AI接口;
+
+namespace LearnAIWithZack
 {
     internal class Program
     {
@@ -6,7 +8,7 @@
         {
             Console.WriteLine("Hello, World!");
 
-            OllamaClientTester tester = new OllamaClientTester();
+            InterfaceOllamaTester tester = new OllamaTester02();
             await tester.Test();
         }
     }
