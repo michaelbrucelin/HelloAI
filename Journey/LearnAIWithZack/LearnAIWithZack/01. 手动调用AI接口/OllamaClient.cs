@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace LearnAIWithZack
+namespace LearnAIWithZack._01._手动调用AI接口
 {
     public class OllamaClient
     {

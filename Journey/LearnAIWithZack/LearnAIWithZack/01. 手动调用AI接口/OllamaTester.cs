@@ -1,11 +1,10 @@
-﻿using LearnAIWithZack._01._调用AI接口;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnAIWithZack
+namespace LearnAIWithZack._01._手动调用AI接口
 {
     public class OllamaTester : InterfaceOllamaTester
     {

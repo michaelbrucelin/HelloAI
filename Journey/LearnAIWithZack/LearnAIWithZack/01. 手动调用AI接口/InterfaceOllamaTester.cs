@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnAIWithZack._01._调用AI接口
+namespace LearnAIWithZack._01._手动调用AI接口
 {
     public interface InterfaceOllamaTester
     {
