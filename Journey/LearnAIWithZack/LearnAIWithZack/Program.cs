@@ -12,7 +12,7 @@ namespace LearnAIWithZack
             // InterfaceOllamaTester tester = new OllamaTester02();
             // await tester.Test();
 
-            InterfaceOpenAITester tester = new OpenAITester02();
+            InterfaceOpenAITester tester = new OpenAITester03();
             await tester.Test();
         }
     }
