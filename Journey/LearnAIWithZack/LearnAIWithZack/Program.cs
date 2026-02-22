@@ -1,18 +1,25 @@
 ﻿using LearnAIWithZack._01._手动调用AI接口;
 using LearnAIWithZack._02._使用包调用AI接口;
+using LearnAIWithZack._03._AI是无状态的;
 
 namespace LearnAIWithZack
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
 
+            // 01. 手动调用AI接口
             // InterfaceOllamaTester tester = new OllamaTester02();
             // await tester.Test();
 
-            InterfaceOpenAITester tester = new OpenAITester03();
+            // 02. 使用包调用AI接口
+            // InterfaceOpenAITester tester = new OpenAITester03();
+            // await tester.Test();
+
+            // 03. AI是无状态的
+            InterfaceAIStateTester tester = new AIStateTester03();
             await tester.Test();
         }
     }
