@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="03. AI是无状态的\appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="HttpMataki.NET.Auto" Version="1.0.3" />
     <PackageReference Include="MemNet" Version="2.0.5" />
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.3.0" />
