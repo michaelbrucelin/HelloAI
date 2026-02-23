@@ -1,6 +1,7 @@
 ﻿using LearnAIWithZack._01._手动调用AI接口;
 using LearnAIWithZack._02._使用包调用AI接口;
 using LearnAIWithZack._03._AI是无状态的;
+using LearnAIWithZack._04._Embedding;
 
 namespace LearnAIWithZack
 {
@@ -19,7 +20,11 @@ namespace LearnAIWithZack
             // await tester.Test();
 
             // 03. AI是无状态的
-            InterfaceAIStateTester tester = new AIStateTester03();
+            // InterfaceAIStateTester tester = new AIStateTester03();
+            // await tester.Test();
+
+            // 04. Embedding
+            InterfaceEmbeddingTester tester = new EmbeddingTester();
             await tester.Test();
         }
     }
