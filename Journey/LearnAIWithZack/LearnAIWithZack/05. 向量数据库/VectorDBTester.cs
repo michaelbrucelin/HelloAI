@@ -21,12 +21,9 @@ namespace LearnAIWithZack._05._向量数据库
             string baseUrl = "http://192.168.1.211:11434/v1";
             string model = "qwen3-embedding:0.6b";
 
+            EmbeddingClient embeddingClient = (new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(baseUrl) })).GetEmbeddingClient(model);
+
             string qdrantHost = "192.168.91.12";
-
-            // Initialize OpenAI embedding client
-            OpenAIClient openAiClient = new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(baseUrl) });
-            EmbeddingClient embeddingClient = openAiClient.GetEmbeddingClient(model);
-
             QdrantClient qdrantClient = new QdrantClient(host: qdrantHost, https: false);
             string collectionName = "sample_texts";
 
@@ -34,27 +31,13 @@ namespace LearnAIWithZack._05._向量数据库
             Console.WriteLine("1 - Insert sample texts into vector database");
             Console.WriteLine("2 - Query directly from vector database");
             Console.Write("\nYour choice (1 or 2): ");
-
             string? choice = Console.ReadLine();
-
-            if (choice == "1")
-            {
-                await InsertRecords();
-            }
-            else if (choice == "2")
-            {
-                await RunQuery();
-            }
-            else
-            {
-                Console.WriteLine("\nInvalid choice. Exiting...");
-            }
+            if (choice == "1") await InsertRecords(); else if (choice == "2") await RunQuery(); else Console.WriteLine("\nInvalid choice. Exiting...");
 
             async Task RunQuery()
             {
-                // Check if collection exists
+                // 检查collection是否存在
                 bool collectionExists = await qdrantClient.CollectionExistsAsync(collectionName);
-
                 if (!collectionExists)
                 {
                     Console.WriteLine($"\nError: Collection '{collectionName}' does not exist!");
@@ -63,42 +46,39 @@ namespace LearnAIWithZack._05._向量数据库
                 }
 
                 Console.WriteLine($"\nCollection '{collectionName}' found. Ready to query.\n");
-                // Interactive query loop
+
+                // 查询测试
                 while (true)
                 {
-                    Console.WriteLine("\n" + new string('-', 70));
-                    Console.Write("Enter your query (or 'quit' to exit): ");
-                    var query = Console.ReadLine();
-
-                    if (string.IsNullOrWhiteSpace(query) || query.ToLower() == "quit")
+                    Console.WriteLine("\n" + new string('-', 88));
+                    Console.Write("\nYou:");
+                    string? input = Console.ReadLine();
+                    if (input is null || input.Length == 0)
                     {
-                        Console.WriteLine("Goodbye!");
+                        Console.WriteLine("input can not be empty");
+                        continue;
+                    }
+                    else if (input.ToLower() == "exit" || input.ToLower() == "quit")
+                    {
                         break;
                     }
-
-                    Console.WriteLine($"\nSearching for: \"{query}\"");
+                    Console.WriteLine($"\nSearching for: \"{input}\"");
                     Console.WriteLine("Generating query embedding...");
 
-                    // Generate embedding for query
-                    var queryEmbeddingResult = await embeddingClient.GenerateEmbeddingAsync(query);
-                    var queryEmbedding = queryEmbeddingResult.Value.ToFloats().ToArray();
+                    // 计算输入的embeding
+                    ClientResult<OpenAIEmbedding> queryEmbeddingResult = await embeddingClient.GenerateEmbeddingAsync(input);
+                    float[] queryEmbedding = queryEmbeddingResult.Value.ToFloats().ToArray();
 
-                    // Search in Qdrant
-                    var searchResults = await qdrantClient.SearchAsync(
-                        collectionName: collectionName,
-                        vector: queryEmbedding,
-                        limit: 3
-                    );
-
+                    // 查询向量数据库
+                    IReadOnlyList<ScoredPoint> searchResults = await qdrantClient.SearchAsync(collectionName: collectionName, vector: queryEmbedding, limit: 3);
                     Console.WriteLine("\nTop 3 Most Similar Texts:");
-                    Console.WriteLine(new string('=', 70));
+                    Console.WriteLine(new string('=', 88));
 
                     for (int i = 0; i < searchResults.Count; i++)
                     {
-                        var result = searchResults[i];
-                        var text = result.Payload["text"].StringValue;
-                        var similarity = result.Score;
-
+                        ScoredPoint result = searchResults[i];
+                        string text = result.Payload["text"].StringValue;
+                        float similarity = result.Score;
                         Console.WriteLine($"\n{i + 1}. Similarity: {similarity:F4} ({similarity * 100:F2}%)");
                         Console.WriteLine($"   Text: {text}");
                     }
@@ -107,7 +87,7 @@ namespace LearnAIWithZack._05._向量数据库
 
             async Task InsertRecords()
             {
-                // Sample texts on different topics
+                // 测试用的10个“知识”
                 string[] sampleTexts = ["C# is a popular programming language for data science and machine learning.",
                                         "I love cooking Italian pasta with fresh tomatoes and basil.",
                                         "The football match was exciting, with the final score being 3-2.",
@@ -120,32 +100,27 @@ namespace LearnAIWithZack._05._向量数据库
                                         "Deep learning has revolutionized computer vision and natural language processing."
                                        ];
 
-                // Get vector dimension from first embedding
+                // 获取第1条“知识”embedding的维度
                 Console.WriteLine("\nGetting embedding dimensions...");
-                var sampleEmbeddingResult = await embeddingClient.GenerateEmbeddingAsync(sampleTexts[0]);
-                var vectorSize = (ulong)sampleEmbeddingResult.Value.ToFloats().Length;
-
+                ClientResult<OpenAIEmbedding> sampleEmbeddingResult = await embeddingClient.GenerateEmbeddingAsync(sampleTexts[0]);
+                ulong vectorSize = (ulong)sampleEmbeddingResult.Value.ToFloats().Length;
                 Console.WriteLine($"Vector dimension: {vectorSize}");
 
-                // Check if collection exists and compare vector size
+                // 检查collection是否存在，以及维度是否匹配
                 bool needRecreate = false;
                 bool collectionExists = await qdrantClient.CollectionExistsAsync(collectionName);
-
                 if (collectionExists)
                 {
-                    var collectionInfo = await qdrantClient.GetCollectionInfoAsync(collectionName);
-                    var existingVectorSize = collectionInfo.Config.Params.VectorsConfig.Params.Size;
-
+                    CollectionInfo collectionInfo = await qdrantClient.GetCollectionInfoAsync(collectionName);
+                    ulong existingVectorSize = collectionInfo.Config.Params.VectorsConfig.Params.Size;
                     if (existingVectorSize != vectorSize)
                     {
-                        Console.WriteLine(
-                            $"Collection exists but vector size mismatch (existing: {existingVectorSize}, new: {vectorSize})");
+                        Console.WriteLine($"Collection exists but vector size mismatch (existing: {existingVectorSize}, new: {vectorSize})");
                         needRecreate = true;
                     }
                     else
                     {
-                        Console.WriteLine(
-                            $"Collection '{collectionName}' already exists with matching vector size ({vectorSize})");
+                        Console.WriteLine($"Collection '{collectionName}' already exists with matching vector size ({vectorSize})");
                     }
                 }
                 else
@@ -161,47 +136,33 @@ namespace LearnAIWithZack._05._向量数据库
                         await qdrantClient.DeleteCollectionAsync(collectionName);
                         Console.WriteLine($"Deleted existing collection '{collectionName}'");
                     }
-
-                    await qdrantClient.CreateCollectionAsync(
-                        collectionName: collectionName,
-                        vectorsConfig: new VectorParams
-                        {
-                            Size = vectorSize,
-                            Distance = Distance.Cosine
-                        }
-                    );
-
+                    await qdrantClient.CreateCollectionAsync(collectionName, new VectorParams { Size = vectorSize, Distance = Distance.Cosine });
                     Console.WriteLine($"Created collection '{collectionName}'");
                 }
 
                 Console.WriteLine();
                 Console.WriteLine("Generating embeddings and storing in Qdrant...\n");
 
-                // Generate embeddings and insert into Qdrant
-                var points = new List<PointStruct>();
-
+                // 将测试用的10个知识embedding，并存储到向量数据库中
+                List<PointStruct> points = new List<PointStruct>();
                 for (int i = 0; i < sampleTexts.Length; i++)
                 {
-                    var text = sampleTexts[i];
-                    var embeddingResult = await embeddingClient.GenerateEmbeddingAsync(text);
-                    var embedding = embeddingResult.Value.ToFloats().ToArray();
+                    string text = sampleTexts[i];
+                    ClientResult<OpenAIEmbedding> embeddingResult = await embeddingClient.GenerateEmbeddingAsync(text);
+                    float[] embedding = embeddingResult.Value.ToFloats().ToArray();
 
-                    var point = new PointStruct
+                    PointStruct point = new PointStruct
                     {
                         Id = new PointId { Num = (ulong)i },
                         Vectors = embedding,
-                        Payload =
-            {
-                ["text"] = text,
-                ["userId"] = "user_12345"
-            }
+                        Payload = { ["text"] = text, ["userId"] = "user_12345" }
                     };
 
                     points.Add(point);
                     Console.WriteLine($"✓ {text}");
                 }
 
-                // Upsert all points to Qdrant
+                // 将结果写入向量数据库
                 await qdrantClient.UpsertAsync(collectionName, points);
                 Console.WriteLine($"\nStored {points.Count} embeddings in Qdrant\n");
             }
