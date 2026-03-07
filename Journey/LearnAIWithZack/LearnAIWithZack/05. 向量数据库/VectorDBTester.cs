@@ -15,8 +15,6 @@ namespace LearnAIWithZack._05._向量数据库
     {
         public async Task Test()
         {
-            Console.WriteLine("=== Embedding with Qdrant Demo ===\n");
-
             string apiKey = "abc";
             string baseUrl = "http://192.168.1.211:11434/v1";
             string model = "qwen3-embedding:0.6b";
@@ -27,12 +25,24 @@ namespace LearnAIWithZack._05._向量数据库
             QdrantClient qdrantClient = new QdrantClient(host: qdrantHost, https: false);
             string collectionName = "sample_texts";
 
-            Console.WriteLine("Please select an option:");
-            Console.WriteLine("1 - Insert sample texts into vector database");
-            Console.WriteLine("2 - Query directly from vector database");
-            Console.Write("\nYour choice (1 or 2): ");
-            string? choice = Console.ReadLine();
-            if (choice == "1") await InsertRecords(); else if (choice == "2") await RunQuery(); else Console.WriteLine("\nInvalid choice. Exiting...");
+            while (true)
+            {
+                Console.WriteLine("请选择：");
+                Console.WriteLine("1. 将测试用的10条“知识”enbedding并插入向量数据库");
+                Console.WriteLine("2. 查询向量数据库");
+                Console.Write("\n请输入你的选择(1 or 2): ");
+                string? input = Console.ReadLine();
+                if (input is null || input.Length == 0)
+                {
+                    Console.WriteLine("input can not be empty");
+                    continue;
+                }
+                else if (input.ToLower() == "exit" || input.ToLower() == "quit")
+                {
+                    goto DONE;
+                }
+                if (input == "1") await InsertRecords(); else if (input == "2") await RunQuery(); else Console.WriteLine("\n非法输入");
+            }
 
             async Task RunQuery()
             {
@@ -166,6 +176,111 @@ namespace LearnAIWithZack._05._向量数据库
                 await qdrantClient.UpsertAsync(collectionName, points);
                 Console.WriteLine($"\nStored {points.Count} embeddings in Qdrant\n");
             }
+
+        DONE:;
         }
+        /*
+         * Hello, World!
+         * 请选择：
+         * 1. 将测试用的10条“知识”enbedding并插入向量数据库
+         * 2. 查询向量数据库
+         * 
+         * 请输入你的选择(1 or 2): 1
+         * 
+         * Getting embedding dimensions...
+         * Vector dimension: 1024
+         * Collection 'sample_texts' does not exist
+         * Created collection 'sample_texts'
+         * 
+         * Generating embeddings and storing in Qdrant...
+         * 
+         * ? C# is a popular programming language for data science and machine learning.
+         * ? I love cooking Italian pasta with fresh tomatoes and basil.
+         * ? The football match was exciting, with the final score being 3-2.
+         * ? Machine learning algorithms can identify patterns in large datasets.
+         * ? The recipe calls for two cups of flour and three eggs.
+         * ? Basketball requires good coordination and teamwork skills.
+         * ? Neural networks are inspired by biological brain structures.
+         * ? Baking bread at home requires patience and the right temperature.
+         * ? The soccer team won the championship after months of training.
+         * ? Deep learning has revolutionized computer vision and natural language processing.
+         * 
+         * Stored 10 embeddings in Qdrant
+         * 
+         * 请选择：
+         * 1. 将测试用的10条“知识”enbedding并插入向量数据库
+         * 2. 查询向量数据库
+         * 
+         * 请输入你的选择(1 or 2): 2
+         * 
+         * Collection 'sample_texts' found. Ready to query.
+         * 
+         * 
+         * ----------------------------------------------------------------------------------------
+         * 
+         * You:what is machine learing
+         * 
+         * Searching for: "what is machine learing"
+         * Generating query embedding...
+         * 
+         * Top 3 Most Similar Texts:
+         * ========================================================================================
+         * 
+         * 1. Similarity: 0.5900 (59.00%)
+         *    Text: Deep learning has revolutionized computer vision and natural language processing.
+         * 
+         * 2. Similarity: 0.5728 (57.28%)
+         *    Text: Machine learning algorithms can identify patterns in large datasets.
+         * 
+         * 3. Similarity: 0.5189 (51.89%)
+         *    Text: C# is a popular programming language for data science and machine learning.
+         * 
+         * ----------------------------------------------------------------------------------------
+         * 
+         * You:waht is machie learnning
+         * 
+         * Searching for: "waht is machie learnning"
+         * Generating query embedding...
+         * 
+         * Top 3 Most Similar Texts:
+         * ========================================================================================
+         * 
+         * 1. Similarity: 0.4697 (46.97%)
+         *    Text: Deep learning has revolutionized computer vision and natural language processing.
+         * 
+         * 2. Similarity: 0.4555 (45.55%)
+         *    Text: Machine learning algorithms can identify patterns in large datasets.
+         * 
+         * 3. Similarity: 0.4195 (41.95%)
+         *    Text: C# is a popular programming language for data science and machine learning.
+         * 
+         * ----------------------------------------------------------------------------------------
+         * 
+         * You:什么是机器学习
+         * 
+         * Searching for: "什么是机器学习"
+         * Generating query embedding...
+         * 
+         * Top 3 Most Similar Texts:
+         * ========================================================================================
+         * 
+         * 1. Similarity: 0.5429 (54.29%)
+         *    Text: Machine learning algorithms can identify patterns in large datasets.
+         * 
+         * 2. Similarity: 0.5301 (53.01%)
+         *    Text: C# is a popular programming language for data science and machine learning.
+         * 
+         * 3. Similarity: 0.5293 (52.93%)
+         *    Text: Deep learning has revolutionized computer vision and natural language processing.
+         * 
+         * ----------------------------------------------------------------------------------------
+         * 
+         * You:quit
+         * 请选择：
+         * 1. 将测试用的10条“知识”enbedding并插入向量数据库
+         * 2. 查询向量数据库
+         * 
+         * 请输入你的选择(1 or 2): quit
+         */
     }
 }
