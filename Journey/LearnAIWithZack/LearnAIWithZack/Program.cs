@@ -3,6 +3,7 @@ using LearnAIWithZack._02._使用包调用AI接口;
 using LearnAIWithZack._03._AI是无状态的;
 using LearnAIWithZack._04._Embedding;
 using LearnAIWithZack._05._向量数据库;
+using LearnAIWithZack._06._RAG;
 
 namespace LearnAIWithZack
 {
@@ -29,7 +30,11 @@ namespace LearnAIWithZack
             // await tester.Test();
 
             // 05. 向量数据库
-            InterfaceVectorDB tester = new VectorDBTester();
+            // InterfaceVectorDB tester = new VectorDBTester();
+            //             await tester.Test();
+
+            // 06. RAG
+            InterfaceRAGTester tester = new RAGTester();
             await tester.Test();
         }
     }
