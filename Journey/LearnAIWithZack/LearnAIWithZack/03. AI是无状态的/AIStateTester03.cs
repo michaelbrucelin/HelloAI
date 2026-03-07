@@ -25,8 +25,8 @@ namespace LearnAIWithZack._03._AI是无状态的
 
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("appsettings.json")            // NuGet Package: Microsoft.Extensions.Configuration.Json
-                                                            // .AddEnvironmentVariables()               // NuGet Package: Microsoft.Extensions.Configuration.EnvironmentVariables
+                .AddJsonFile("appsettings.json")                           // NuGet Package: Microsoft.Extensions.Configuration.Json
+                                                                           // .AddEnvironmentVariables()               // NuGet Package: Microsoft.Extensions.Configuration.EnvironmentVariables
                 .Build();
 
             ServiceCollection services = new ServiceCollection();
