@@ -38,10 +38,10 @@ namespace LearnAIWithZack._03._AI是无状态的
             await memoryService.InitializeAsync();
 
             // string chatApiKey = memoryConfig.LLM.ApiKey;
-            string chatApiKey = "abc";
-            string textGenEndpoint = memoryConfig.LLM.Endpoint;
-            string textGenDeploymentName = memoryConfig.LLM.Model;
-            CompleteChatClient client = new CompleteChatClient(textGenEndpoint, textGenDeploymentName, chatApiKey);
+            string chatKey = "abc";
+            string charUrl = memoryConfig.LLM.Endpoint;
+            string chatModel = memoryConfig.LLM.Model;
+            CompleteChatClient client = new CompleteChatClient(charUrl, chatModel, chatKey);
 
             while (true)
             {
