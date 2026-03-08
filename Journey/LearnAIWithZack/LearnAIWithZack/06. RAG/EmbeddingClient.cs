@@ -1,4 +1,5 @@
 ﻿using OpenAI;
+using OpenAI.Embeddings;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -12,19 +13,13 @@ namespace LearnAIWithZack._06._RAG
     {
         public async Task<float[]> GetEmbeddingAsync(string input, CancellationToken cancellationToken = default)
         {
-            OpenAIClient client = new(
-                new ApiKeyCredential(apiKey),
-                new OpenAIClientOptions
-                {
-                    Endpoint = new Uri(endpoint)
-                });
+            OpenAIClient client = new(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(endpoint) });
 
-            var embeddingResult = await client.GetEmbeddingClient(deploymentName)
-                .GenerateEmbeddingAsync(input, cancellationToken: cancellationToken);
+            ClientResult<OpenAIEmbedding> embeddingResult = await client.GetEmbeddingClient(deploymentName).GenerateEmbeddingAsync(input, cancellationToken: cancellationToken);
 
             if (embeddingResult.Value != null)
             {
-                var embedding = embeddingResult.Value.ToFloats().ToArray();
+                float[] embedding = embeddingResult.Value.ToFloats().ToArray();
                 return embedding;
             }
 

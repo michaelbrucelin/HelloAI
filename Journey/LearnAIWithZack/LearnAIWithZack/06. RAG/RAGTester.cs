@@ -15,62 +15,49 @@ namespace LearnAIWithZack._06._RAG
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            var collectionName = "my_documents";
-            var files = Directory.GetFiles("E:\\主同步盘\\我的坚果云\\读书笔记及我的文章\\历史记录\\2010年之前的笔记\\blog随笔", "*.txt",
-                SearchOption.AllDirectories);
+            string collectionName = "my_documents";
+            string[] files = Directory.GetFiles("E:\\主同步盘\\我的坚果云\\读书笔记及我的文章\\历史记录\\2010年之前的笔记\\blog随笔", "*.txt", SearchOption.AllDirectories);
 
-            var embeddingApiKey = Environment.GetEnvironmentVariable("AI__EmbeddingApiKey");
-            var chatApiKey = Environment.GetEnvironmentVariable("AI__ChatApiKey");
+            string embeddingApiKey = Environment.GetEnvironmentVariable("AI__EmbeddingApiKey");
+            string chatApiKey = Environment.GetEnvironmentVariable("AI__ChatApiKey");
 
-            //Azure OpenAI
-            var embeddingEndpoint = "https://personalopenai1.openai.azure.com/openai/v1/";
-            var embeddingDeploymentName = "text-embedding-3-large";
-            var textGenEndpoint = "https://yangz-mf8s64eg-eastus2.cognitiveservices.azure.com/openai/v1/";
-            var extGenDeploymentName = "gpt-5-nano";
+            // Azure OpenAI
+            string embeddingEndpoint = "https://personalopenai1.openai.azure.com/openai/v1/";
+            string embeddingDeploymentName = "text-embedding-3-large";
+            string textGenEndpoint = "https://yangz-mf8s64eg-eastus2.cognitiveservices.azure.com/openai/v1/";
+            string extGenDeploymentName = "gpt-5-nano";
 
-            using var httpClientQdrant = new HttpClient
-            { Timeout = TimeSpan.FromMinutes(50), BaseAddress = new Uri("http://localhost:6333") };
-            var qdrantClient = new QdrantClient(httpClientQdrant);
+            using HttpClient httpClientQdrant = new HttpClient { Timeout = TimeSpan.FromMinutes(50), BaseAddress = new Uri("http://localhost:6333") };
+            QdrantClient qdrantClient = new QdrantClient(httpClientQdrant);
 
-            var embeddingClient = new EmbeddingClient(embeddingEndpoint, embeddingDeploymentName, embeddingApiKey);
-            var completeChatClient = new CompleteChatClient(textGenEndpoint, extGenDeploymentName, chatApiKey);
+            EmbeddingClient embeddingClient = new EmbeddingClient(embeddingEndpoint, embeddingDeploymentName, embeddingApiKey);
+            ChatClient chatClient = new ChatClient(textGenEndpoint, extGenDeploymentName, chatApiKey);
 
             Console.WriteLine("请选择操作：1-保存到Qdrant，2-RAG检索+AI生成");
-            var choice = Console.ReadLine();
+            string? choice = Console.ReadLine();
 
             if (choice == "1")
             {
-                var documents = new List<(string, float[])>();
-                foreach (var file in files)
+                List<(string, float[])> documents = new List<(string, float[])>();
+                foreach (string file in files)
                 {
-                    //创新点1：对不同格式文件（pdf、word、图片等）支持，Pdf-MinerU，图片（可以让大模型总结图片内容）
-                    var text = await FileHelpers.ReadAllTextAnyEncodingAsync(file);
-                    //创新点2：不同的文本切分方式
-                    var chunks = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                    foreach (var chunk in chunks)
+                    // 创新点1：对不同格式文件（pdf、word、图片等）支持，Pdf-MinerU，图片（可以让大模型总结图片内容）
+                    string text = await FileHelpers.ReadAllTextAnyEncodingAsync(file);
+                    // 创新点2：不同的文本切分方式
+                    string[] chunks = text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                    foreach (string chunk in chunks)
                     {
                         string substring;
-                        if (chunk.Length < 20)
-                        {
-                            continue; // 太短的跳过
-                        }
-
-                        if (chunk.Length > 1000)
-                        {
-                            substring = chunk.Substring(0, 1000); // 太长的截断
-                        }
-                        else
-                        {
-                            substring = chunk;
-                        }
+                        if (chunk.Length < 20) continue;                                      // 太短的跳过
+                        substring = chunk.Length > 1000 ? chunk.Substring(0, 1000) : chunk;   // 太长的截断
 
                         // 2. 使用大模型做embedding
-                        var embedding = await embeddingClient.GetEmbeddingAsync(substring);
+                        float[] embedding = await embeddingClient.GetEmbeddingAsync(substring);
                         documents.Add((substring, embedding));
                     }
                 }
 
-                //await qdrantClient.DeleteCollectionAsync(collectionName);
+                // await qdrantClient.DeleteCollectionAsync(collectionName);
                 // 3. 保存到Qdrant
                 await qdrantClient.SaveToQdrantAsync(collectionName, documents);
                 Console.WriteLine("已保存到Qdrant。");
@@ -81,22 +68,19 @@ namespace LearnAIWithZack._06._RAG
                 while (true)
                 {
                     Console.WriteLine("请输入你的问题：");
-                    var question = Console.ReadLine();
-                    var questionEmbedding = await embeddingClient.GetEmbeddingAsync(question);
-                    var relevantDocs = await qdrantClient.SearchQdrantAsync(collectionName, questionEmbedding);
-                    for (var i = 0; i < relevantDocs.Count; i++)
-                    {
-                        Console.WriteLine($"相关内容片段{i}：{relevantDocs[i]}");
-                    }
+                    string? question = Console.ReadLine();
+                    float[] questionEmbedding = await embeddingClient.GetEmbeddingAsync(question);
+                    List<string> relevantDocs = await qdrantClient.SearchQdrantAsync(collectionName, questionEmbedding);
+                    for (int i = 0; i < relevantDocs.Count; i++) Console.WriteLine($"相关内容片段{i}：{relevantDocs[i]}");
 
-                    var context = string.Join("\n", relevantDocs);
+                    string context = string.Join("\n", relevantDocs);
                     /*
-                    var answer = await completeChatClient.GenerateTextAsync(question, context);
+                    var answer = await chatClient.GenerateTextAsync(question, context);
                     Console.WriteLine($"AI回答：{answer}");*/
                     Console.WriteLine("AI回答：");
-                    var streamingText = completeChatClient.GenerateStreamingTextAsync(question, context);
+                    IAsyncEnumerable<string> streamingText = chatClient.GenerateStreamingTextAsync(question, context);
                     // 实时打印流式输出
-                    await foreach (var text in streamingText)
+                    await foreach (string text in streamingText)
                     {
                         Console.Write(text);
                     }

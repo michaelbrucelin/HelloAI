@@ -9,16 +9,16 @@ namespace LearnAIWithZack._06._RAG
 {
     public static class FileHelpers
     {
-        public static async Task<string> ReadAllTextAnyEncodingAsync(string filePath,
-            CancellationToken cancellationToken = default)
+        public static async Task<string> ReadAllTextAnyEncodingAsync(string filePath, CancellationToken cancellationToken = default)
         {
-            var bytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
+            byte[] bytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
             // 用Ude检测编码
-            var detector = new CharsetDetector();
+            CharsetDetector detector = new CharsetDetector();
             detector.Feed(bytes, 0, bytes.Length);
             detector.DataEnd();
-            var encoding = Encoding.UTF8;
+            Encoding encoding = Encoding.UTF8;
             if (detector.Charset != null) encoding = Encoding.GetEncoding(detector.Charset);
+
             return encoding.GetString(bytes);
         }
     }
