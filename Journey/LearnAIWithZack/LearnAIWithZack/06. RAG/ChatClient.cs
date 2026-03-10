@@ -44,7 +44,7 @@ namespace LearnAIWithZack._06._RAG
             }
         }
 
-        public async Task<List<TextChunk>> GenerateRAGAsync(string input, string context, CancellationToken cancellationToken = default)
+        public async Task<List<TextChunk>> GenerateRAGTrunksAsync(string input, CancellationToken cancellationToken = default)
         {
             using IChatClient client = CreateClient();
 
