@@ -34,7 +34,7 @@ namespace LearnAIWithZack
             //             await tester.Test();
 
             // 06. RAG
-            InterfaceRAGTester tester = new RAGTester();
+            InterfaceRAGTester tester = new RAGTester02();
             await tester.Test();
         }
     }

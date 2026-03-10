@@ -38,9 +38,8 @@ namespace LearnAIWithZack._06._RAG
             ChatClient chatClient = new ChatClient(chatUrl, chatModel, chatApiKey);
             EmbeddingClient embeddingClient = new EmbeddingClient(embeddingUrl, embeddingModel, embeddingApiKey);
 
-            Console.WriteLine("请选择操作：1-保存到Qdrant，2-RAG检索+AI生成");
+            Console.WriteLine("请选择操作：1. RAG生成并保存到Qdrant; 2. RAG检索 + AI生成");
             string? choice = Console.ReadLine();
-
             if (choice == "1")
             {
                 List<(string, float[])> documents = new List<(string, float[])>();
@@ -63,12 +62,12 @@ namespace LearnAIWithZack._06._RAG
                     */
 
                     // 使用大模型做chunk
-                    List<TextChunk> chunks = await chatClient.GenerateRAGTrunksAsync(text);
-                    foreach (TextChunk chunk in chunks)
+                    string[] chunks = await chatClient.GenerateRAGTrunksAsync(text);
+                    foreach (string chunk in chunks)
                     {
                         // 使用大模型做embedding
-                        float[] embedding = await embeddingClient.GetEmbeddingAsync(chunk.Content);
-                        documents.Add((chunk.Content, embedding));
+                        float[] embedding = await embeddingClient.GetEmbeddingAsync(chunk);
+                        documents.Add((chunk, embedding));
                     }
                 }
 
@@ -82,26 +81,33 @@ namespace LearnAIWithZack._06._RAG
                 // RAG检索 + AI生成
                 while (true)
                 {
-                    Console.WriteLine("请输入你的问题：");
+                    Console.WriteLine("\nYou:");
                     string? input = Console.ReadLine();
+                    if (input is null || input.Length == 0)
+                    {
+                        Console.WriteLine("input can not be empty");
+                        continue;
+                    }
+                    else if (input.ToLower() == "exit" || input.ToLower() == "quit")
+                    {
+                        break;
+                    }
                     float[] questionEmbedding = await embeddingClient.GetEmbeddingAsync(input);
                     List<string> relevantDocs = await qdrantClient.SearchQdrantAsync(collectionName, questionEmbedding);
-                    for (int i = 0; i < relevantDocs.Count; i++) Console.WriteLine($"相关内容片段{i}：{relevantDocs[i]}");
+                    // for (int i = 0; i < relevantDocs.Count; i++) Console.WriteLine($"相关内容片段{i}：{relevantDocs[i]}");
 
                     string context = string.Join("\n", relevantDocs);
+                    string answer = await chatClient.GenerateTextAsync(input, context);
+                    Console.WriteLine($"AI: {answer}");
+
                     /*
-                    var answer = await chatClient.GenerateTextAsync(question, context);
-                    Console.WriteLine($"AI回答：{answer}");*/
-                    Console.WriteLine("AI回答：");
-                    IAsyncEnumerable<string> streamingText = chatClient.GenerateStreamingTextAsync(input, context);
                     // 实时打印流式输出
+                    IAsyncEnumerable<string> streamingText = chatClient.GenerateStreamingTextAsync(input, context);
                     await foreach (string text in streamingText)
                     {
                         Console.Write(text);
                     }
-
-                    Console.WriteLine();
-                    Console.WriteLine("\n" + new string('=', 88));
+                    */
                 }
             }
             else
@@ -109,5 +115,37 @@ namespace LearnAIWithZack._06._RAG
                 Console.WriteLine("选择错误");
             }
         }
+        /*
+         * Hello, World!
+         * 请选择操作：1. RAG生成并保存到Qdrant; 2. RAG检索 + AI生成
+         * 2
+         * 
+         * You:
+         * 特朗普与内塔尼亚胡有什么私人关系？
+         * AI: 根据公开的家谱调查，特朗普与内塔尼亚胡是第三代堂表亲，即两人有共同的曾祖父母，血缘关系属于远房表兄弟。两位领导人公开声明均表示尊重这种家族关系，并称此关系能进一步加强美以合作。没有其他更亲密的私人交往记录。
+         * 
+         * You:
+         * 微软与google，facebook以及亚马逊有什么隶属关系？
+         * AI: 根据匿名泄露信，微软在2018年“秘密”收购了谷歌与亚马逊，内部决策权已转归微软；而 Facebook 并未被列入此交易，保持独立。
+         * 
+         * You:
+         * 真的有外星生命吗？有人见过外星生命吗？
+         * AI: 根据提供的资料，没有正式证据表明确实存在外星生命。报道仅提到在月球背面发现的“大规模、结构规整的古代城市遗址”，并出现了“月球人”的猜测，但并没有任何实物或目击报告确认外星生物存在。至今，人类没有亲眼见到或捕捉到外星生命的记录。
+         * 
+         * You:
+         * 现今100米世界纪录是多少？谁保持的？
+         * AI: 截至本新闻报道，100米世界纪录为**9.33秒**，由**中国短跑运动员苏炳添**在2025年4月12日上海钻石联赛中创造。
+         * 
+         * You:
+         * 太阳系除了地球以外，还有其他文明吗？
+         * AI: 目前已在月球背面捕获到类似古文明建筑的遗址图像，但科学家尚未确认其是否属于真正的人类或其它文明的遗迹。除地球外，尚无可靠证据证明太阳系内存在其他文明。
+         * 
+         * You:
+         * 地球上的动物，除了人以外，智商最高的3中动物是哪3个？
+         * AI: 抱歉，文档中仅提到了金鱼的智力表现，并未列出其他动物的智商排名。若需此类信息请提供相应资料。
+         * 
+         * You:
+         * quit
+         */
     }
 }
