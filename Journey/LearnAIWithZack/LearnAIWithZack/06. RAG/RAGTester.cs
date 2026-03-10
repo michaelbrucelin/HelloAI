@@ -37,7 +37,10 @@ namespace LearnAIWithZack._06._RAG
                 {
                     break;
                 }
-                ChatResponse response = await client.GetResponseAsync(input);
+                ChatResponse response = await client.GetResponseAsync(new List<ChatMessage>{
+                    new ChatMessage(ChatRole.System, $"使用简体中文回答用户的问题。注意：不要在提供的内容之外进行回答，回答简明扼要，控制在100字之内。"),
+                    new ChatMessage(ChatRole.User, input)
+                });
                 Console.WriteLine($"AI: {response.Text}");
             }
         }
