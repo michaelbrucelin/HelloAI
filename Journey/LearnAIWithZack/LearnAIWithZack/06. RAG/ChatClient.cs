@@ -20,11 +20,11 @@ namespace LearnAIWithZack._06._RAG
         [property: JsonPropertyName("char_count")] int CharCount
     );
 
-    public class ChatClient(string endpoint, string deploymentName, string apiKey = null)
+    public class ChatClient(string url, string model, string apiKey = null)
     {
         private IChatClient CreateClient()
         {
-            return new OpenAI.Chat.ChatClient(model: deploymentName, credential: new ApiKeyCredential(apiKey), options: new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}") }).AsIChatClient();
+            return new OpenAI.Chat.ChatClient(model: model, credential: new ApiKeyCredential(apiKey), options: new OpenAIClientOptions { Endpoint = new Uri($"{url}") }).AsIChatClient();
         }
 
         public async Task<string> GenerateTextAsync(string input, string context, CancellationToken cancellationToken = default)

@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace LearnAIWithZack._06._RAG
 {
-    public class EmbeddingClient(string endpoint, string deploymentName, string apiKey = null)
+    public class EmbeddingClient(string url, string model, string apiKey = null)
     {
         public async Task<float[]> GetEmbeddingAsync(string input, CancellationToken cancellationToken = default)
         {
-            OpenAIClient client = new(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(endpoint) });
+            OpenAIClient client = new(new ApiKeyCredential(apiKey), new OpenAIClientOptions { Endpoint = new Uri(url) });
 
-            ClientResult<OpenAIEmbedding> embeddingResult = await client.GetEmbeddingClient(deploymentName).GenerateEmbeddingAsync(input, cancellationToken: cancellationToken);
+            ClientResult<OpenAIEmbedding> embeddingResult = await client.GetEmbeddingClient(model).GenerateEmbeddingAsync(input, cancellationToken: cancellationToken);
 
             if (embeddingResult.Value != null)
             {
