@@ -4,6 +4,7 @@ using LearnAIWithZack._03._AI是无状态的;
 using LearnAIWithZack._04._Embedding;
 using LearnAIWithZack._05._向量数据库;
 using LearnAIWithZack._06._RAG;
+using LearnAIWithZack._07._FunctionCalling;
 
 namespace LearnAIWithZack
 {
@@ -34,7 +35,11 @@ namespace LearnAIWithZack
             //             await tester.Test();
 
             // 06. RAG
-            InterfaceRAGTester tester = new RAGTester02();
+            // InterfaceRAGTester tester = new RAGTester02();
+            // await tester.Test();
+
+            // 07. Function Calling
+            InterfaceFunctionCallingTester tester = new FunctionCallingTester();
             await tester.Test();
         }
     }
