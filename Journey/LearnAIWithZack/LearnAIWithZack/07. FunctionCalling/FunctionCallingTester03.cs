@@ -54,7 +54,7 @@ namespace LearnAIWithZack._07._FunctionCalling
             // Use ChatClientBuilder with UseFunctionInvocation for automatic function calling
             using IChatClient client = new ChatClientBuilder(chatClient)
                 .UseFunctionInvocation()
-                //.UseToolReduction(new EmbeddingToolReductionStrategy())
+                // .UseToolReduction(new EmbeddingToolReductionStrategy())
                 .Build();
             ChatResponse response = await client.GetResponseAsync(messages, options, cancellationToken);
 
