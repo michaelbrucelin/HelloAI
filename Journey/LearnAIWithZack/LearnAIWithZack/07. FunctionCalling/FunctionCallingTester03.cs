@@ -24,17 +24,17 @@ namespace LearnAIWithZack._07._FunctionCalling
 
             ChatClient03 chatClient = new ChatClient03(baseUrl, model, apiKey);
 
-            var response = await chatClient.GenerateWithFunctionCallingAsync("Find all my password files under E:\\主同步盘\\我的坚果云\\个人资料\\网络帐号, and write the result to E:\\temp\\password_files.txt");
+            string response = await chatClient.GenerateWithFunctionCallingAsync("Find all my password files under E:\\主同步盘\\我的坚果云\\个人资料\\网络帐号, and write the result to E:\\temp\\password_files.txt");
             Console.WriteLine(response);
         }
     }
 
-    public class ChatClient03(string endpoint, string deploymentName, string? apiKey = null)
+    public class ChatClient03(string url, string model, string apiKey = "")
     {
         public async Task<string> GenerateWithFunctionCallingAsync(string input, CancellationToken cancellationToken = default)
         {
             // Use OpenAI ChatClient and convert to IChatClient
-            using var chatClient = new OpenAI.Chat.ChatClient(deploymentName, new ApiKeyCredential(apiKey ?? ""), new OpenAIClientOptions() { Endpoint = new Uri(endpoint) }).AsIChatClient();
+            using IChatClient chatClient = new OpenAI.Chat.ChatClient(model, new ApiKeyCredential(apiKey ?? ""), new OpenAIClientOptions() { Endpoint = new Uri(url) }).AsIChatClient();
 
             List<ChatMessage> messages = [
                 new ChatMessage(ChatRole.System, "You are a helpful assistant that can help users with file operations. You can search for files, read their contents, and write to files. Use these tools to help users manage their files effectively."),
@@ -52,12 +52,12 @@ namespace LearnAIWithZack._07._FunctionCalling
             };
 
             // Use ChatClientBuilder with UseFunctionInvocation for automatic function calling
-            using var client = new ChatClientBuilder(chatClient)
+            using IChatClient client = new ChatClientBuilder(chatClient)
                 .UseFunctionInvocation()
                 //.UseToolReduction(new EmbeddingToolReductionStrategy())
                 .Build();
+            ChatResponse response = await client.GetResponseAsync(messages, options, cancellationToken);
 
-            var response = await client.GetResponseAsync(messages, options, cancellationToken);
             return response.Text;
         }
 

@@ -29,11 +29,11 @@ namespace LearnAIWithZack._07._FunctionCalling
         }
     }
 
-    public class ChatClient02(string endpoint, string deploymentName, string? apiKey = null)
+    public class ChatClient02(string url, string model, string apiKey = "")
     {
         public async Task<string> GenerateWithFunctionCallingAsync(string input, CancellationToken cancellationToken = default)
         {
-            using IChatClient chatClient = new OpenAI.Chat.ChatClient(deploymentName, new ApiKeyCredential(apiKey), new OpenAIClientOptions() { Endpoint = new Uri(endpoint) }).AsIChatClient();
+            using IChatClient chatClient = new OpenAI.Chat.ChatClient(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions() { Endpoint = new Uri(url) }).AsIChatClient();
 
             List<ChatMessage> messages = [
                 new ChatMessage(ChatRole.System, "You are a helpful assistant that can help users with the given function tools."),
@@ -43,10 +43,11 @@ namespace LearnAIWithZack._07._FunctionCalling
             {
                 Tools = [AIFunctionFactory.Create(GetWeatherInfo)]
             };
-            using var functionCallingChatClient = new ChatClientBuilder(chatClient)
+            using IChatClient functionCallingChatClient = new ChatClientBuilder(chatClient)
                 .UseFunctionInvocation()
                 .Build();                                                            // 对IChatClient进行包装，支持函数调用功能
-            var response = await functionCallingChatClient.GetResponseAsync(messages, options, cancellationToken);
+            ChatResponse response = await functionCallingChatClient.GetResponseAsync(messages, options, cancellationToken);
+
             return response.Text;
         }
 
