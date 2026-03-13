@@ -14,9 +14,13 @@ namespace LearnAIWithZack._07._FunctionCalling
 {
     public class FunctionCallingTester02 : InterfaceFunctionCallingTester
     {
+        /// <summary>
+        /// 这里测试有Function Calling时，AI回答的情况
+        /// </summary>
+        /// <returns></returns>
         public async Task Test()
         {
-            HttpClientAutoInterceptor.StartInterception();
+            // HttpClientAutoInterceptor.StartInterception();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string apiKey = "abc";
@@ -66,5 +70,18 @@ namespace LearnAIWithZack._07._FunctionCalling
 
             return JsonSerializer.Serialize(weatherData);
         }
+        /*
+         * Hello, World!
+         * 大连今天的气温舒适、晴朗，22?°C 稍显凉爽，湿度 65%，风速 10?km/h。这样的天气适合穿：
+         * 
+         * | 场合 | 推荐穿着 |
+         * |------|----------|
+         * | **日常出行** | 轻薄 T 恤或短袖针织衫 + 轻薄羊毛外套、牛仔裤或休闲长裤。若早晚温差稍大，可以在外面叠加一件薄款风衣或轻柔夹克。 |
+         * | **早晚温度稍低** | 建议携带薄款长袖上衣、针织衫或夹克，外穿风衣或轻薄羽绒外套，以防晚间降温。 |
+         * | **活动强度较大** | 选择透气性好的运动服装，配合轻便运动鞋；可以穿短袖运动衫搭配运动长裤或短裤。 |
+         * | **正式场合** | 若需要正式装束，可穿素色休闲西装外套 + 简洁衬衫 + 修身长裤，外面可配上轻薄针织或羊毛开衫。 |
+         * 
+         * 温度比较适中，整天都能穿得轻快舒适。若您担心下午或傍晚气温下降，可以随身携带一件薄款外套。祝您一天愉快！
+         */
     }
 }

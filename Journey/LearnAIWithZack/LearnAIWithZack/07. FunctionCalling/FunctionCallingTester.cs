@@ -12,9 +12,13 @@ namespace LearnAIWithZack._07._FunctionCalling
 {
     public class FunctionCallingTester : InterfaceFunctionCallingTester
     {
+        /// <summary>
+        /// 这里测试没有Function Calling时，某些问题AI无法回答
+        /// </summary>
+        /// <returns></returns>
         public async Task Test()
         {
-            HttpClientAutoInterceptor.StartInterception();
+            // HttpClientAutoInterceptor.StartInterception();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string apiKey = "abc";
@@ -28,5 +32,22 @@ namespace LearnAIWithZack._07._FunctionCalling
                 });
             Console.WriteLine(response);
         }
+        /*
+         * Hello, World!
+         * 我目前无法获取大连今天的实时天气，建议你查看当地的天气预报（如天气预报网站、手机天气App或新闻频道），这样才能得到最准确的温度、 降水和风向等信息。
+         * 
+         * 一般来说，只要知道今天的温度区间、是否下雨以及风速，你就能快速决定穿着：
+         * 
+         * | 温度 | 典型穿搭建议 |
+         * |------|--------------|
+         * | 10–15?°C | 轻薄外套＋长袖、长裤 |
+         * | 15–20?°C | 夹层或风衣、长袖T恤/衬衫 |
+         * | 20–25?°C | 轻薄T恤+短袖、短裤 |
+         * | 25?°C以上 | 短袖+短裤、夏季防晒衣 |
+         * | 雨天 | 防水外套/雨衣，防滑鞋 |
+         * | 大风 | 防风夹克或毛呢大衣 |
+         * 
+         * 如果你想要更个性化的搭配建议，只需告诉我今天的实况，我会帮你挑选合适的服装。祝你今天穿着舒适，心情愉快！
+         */
     }
 }

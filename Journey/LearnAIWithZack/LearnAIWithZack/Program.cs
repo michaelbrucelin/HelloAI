@@ -8,7 +8,7 @@ using LearnAIWithZack._07._FunctionCalling;
 
 namespace LearnAIWithZack
 {
-    internal class Program
+    public class Program
     {
         public static async Task Main(string[] args)
         {
@@ -39,7 +39,7 @@ namespace LearnAIWithZack
             // await tester.Test();
 
             // 07. Function Calling
-            InterfaceFunctionCallingTester tester = new FunctionCallingTester();
+            InterfaceFunctionCallingTester tester = new FunctionCallingTester02();
             await tester.Test();
         }
     }
