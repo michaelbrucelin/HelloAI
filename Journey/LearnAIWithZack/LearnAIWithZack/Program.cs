@@ -39,7 +39,7 @@ namespace LearnAIWithZack
             // await tester.Test();
 
             // 07. Function Calling
-            InterfaceFunctionCallingTester tester = new FunctionCallingTester02();
+            InterfaceFunctionCallingTester tester = new FunctionCallingTester03();
             await tester.Test();
         }
     }

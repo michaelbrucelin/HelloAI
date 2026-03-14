@@ -13,9 +13,13 @@ namespace LearnAIWithZack._07._FunctionCalling
 {
     public class FunctionCallingTester03 : InterfaceFunctionCallingTester
     {
+        /// <summary>
+        /// 这里测试有多个Function Calling时，AI回答的情况
+        /// </summary>
+        /// <returns></returns>
         public async Task Test()
         {
-            HttpClientAutoInterceptor.StartInterception();
+            // HttpClientAutoInterceptor.StartInterception();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             string apiKey = "abc";
@@ -24,7 +28,7 @@ namespace LearnAIWithZack._07._FunctionCalling
 
             ChatClient03 chatClient = new ChatClient03(baseUrl, model, apiKey);
 
-            string response = await chatClient.GenerateWithFunctionCallingAsync("Find all my password files under E:\\主同步盘\\我的坚果云\\个人资料\\网络帐号, and write the result to E:\\temp\\password_files.txt");
+            string response = await chatClient.GenerateWithFunctionCallingAsync(@"Find all my license files under C:\Users\Administrator\数据\Data\MyCode\github\MyNotes\MyNotes\2. it-stack\8. others\, and write the result to C:\Users\Administrator\数据\Temporary\license_files.txt");
             Console.WriteLine(response);
         }
     }
@@ -33,7 +37,6 @@ namespace LearnAIWithZack._07._FunctionCalling
     {
         public async Task<string> GenerateWithFunctionCallingAsync(string input, CancellationToken cancellationToken = default)
         {
-            // Use OpenAI ChatClient and convert to IChatClient
             using IChatClient chatClient = new OpenAI.Chat.ChatClient(model, new ApiKeyCredential(apiKey ?? ""), new OpenAIClientOptions() { Endpoint = new Uri(url) }).AsIChatClient();
 
             List<ChatMessage> messages = [
@@ -51,7 +54,6 @@ namespace LearnAIWithZack._07._FunctionCalling
                 ]
             };
 
-            // Use ChatClientBuilder with UseFunctionInvocation for automatic function calling
             using IChatClient client = new ChatClientBuilder(chatClient)
                 .UseFunctionInvocation()
                 // .UseToolReduction(new EmbeddingToolReductionStrategy())
@@ -62,7 +64,7 @@ namespace LearnAIWithZack._07._FunctionCalling
         }
 
         [Description("Search all given file types under a directory and return matched files' full paths")]
-        private string[] SearchFiles([Description("Directory path to search in")] string directory, [Description("Array of file extensions to search for (e.g., ['.txt', '.cs', '.json'])")] string[] extensions)
+        private string[] SearchFiles([Description("Directory path to search in")] string directory, [Description("Array of file extensions to search for (e.g., ['.txt', '.json', '.md'])")] string[] extensions)
         {
             if (!Directory.Exists(directory))
             {
@@ -120,5 +122,22 @@ namespace LearnAIWithZack._07._FunctionCalling
 
             return drives.ToArray<object>();
         }
+        /*
+         * Hello, World!
+         * I’ve located the license-related files and written their full paths to:
+         * 
+         * ```
+         * C:\Users\Administrator\数据\Temporary\license_files.txt
+         * ```
+         * 
+         * The file now contains:
+         * 
+         * ```
+         * C:\Users\Administrator\数据\Data\MyCode\github\MyNotes\MyNotes\2. it-stack\8. others\一些License.md
+         * C:\Users\Administrator\数据\Data\MyCode\github\MyNotes\MyNotes\2. it-stack\8. others\一些License_Microsoft Static Activation Keys.md
+         * ```
+         * 
+         * Let me know if you need anything else!
+         */
     }
 }

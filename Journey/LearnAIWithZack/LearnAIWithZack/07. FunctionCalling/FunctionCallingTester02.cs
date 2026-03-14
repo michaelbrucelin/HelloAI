@@ -49,7 +49,7 @@ namespace LearnAIWithZack._07._FunctionCalling
             };
             using IChatClient functionCallingChatClient = new ChatClientBuilder(chatClient)
                 .UseFunctionInvocation()
-                .Build();                                                            // 对IChatClient进行包装，支持函数调用功能
+                .Build();                                                                    // 对IChatClient进行包装，支持函数调用功能
             ChatResponse response = await functionCallingChatClient.GetResponseAsync(messages, options, cancellationToken);
 
             return response.Text;
