@@ -56,7 +56,7 @@ namespace LearnAIWithZack._07._FunctionCalling
 
             using IChatClient client = new ChatClientBuilder(chatClient)
                 .UseFunctionInvocation()
-                // .UseToolReduction(new EmbeddingToolReductionStrategy())
+                // .UseToolReduction(new EmbeddingToolReductionStrategy())  // 只把与问题相关的Tools发给大模型，而不是全部的Tools，否则的大模型会产生幻觉，而且浪费token
                 .Build();
             ChatResponse response = await client.GetResponseAsync(messages, options, cancellationToken);
 
